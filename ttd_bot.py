@@ -18,10 +18,12 @@ def check_tickets():
     try:
         response = requests.get(url)
 
-        if "sold out" not in response.text.lower():
-            send_message("🔥 POSSIBLE TTD TICKETS AVAILABLE! CHECK NOW!")
-        else:
-            print("Still sold out")
+        text = response.text.lower()
+
+if "no tickets available" in text or "sold out" in text:
+    print("❌ No tickets")
+else:
+    send_message("🟢 CHECK NOW! TTD page changed — possible availability!")
 
     except:
         print("Error checking site")
