@@ -36,5 +36,20 @@ def check_tickets():
         print("Error:", e)
 
 while True:
-    check_tickets()
-    time.sleep(120)
+    from datetime import datetime
+
+while True:
+    now = datetime.now()
+    current_hour = now.hour
+    current_minute = now.minute
+
+    # 🔥 Peak time (9:50 AM – 10:30 AM)
+    if current_hour == 9 and current_minute >= 50 or current_hour == 10:
+        print("🔥 Peak time — checking fast")
+        check_tickets()
+        time.sleep(20)  # fast checking
+
+    else:
+        print("Normal time — slow checking")
+        check_tickets()
+        time.sleep(180)  # slow checking (3 min)
