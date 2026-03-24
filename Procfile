@@ -1,0 +1,1 @@
+worker: python ttd_bot.py
