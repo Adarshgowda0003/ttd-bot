@@ -1,6 +1,6 @@
-import asyncio
-from playwright.async_api import async_playwright
 import requests
+import time
+
 
 BOT_TOKEN = "8796185442:AAE7w2A1CKsRspCoQCUZwzWTaD0L0R7S0WE"
 CHAT_ID = "5361281940"
@@ -15,34 +15,26 @@ def send_message(text):
     }
     requests.get(url, params=params)
 
-async def check_tickets():
+def check_tickets():
     global last_sent
 
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        page = await browser.new_page()
+    url = "https://tirupatibalaji.ap.gov.in"
 
-        try:
-            await page.goto("https://tirupatibalaji.ap.gov.in", timeout=60000)
-            content = await page.content()
-            text = content.lower()
+    try:
+        response = requests.get(url, timeout=10)
+        text = response.text.lower()
 
-            if "sold out" in text or "no tickets available" in text:
-                print("❌ No tickets")
-                last_sent = False
-            else:
-                if not last_sent:
-                    send_message("🟢 REAL ALERT! TTD tickets may be available NOW!")
-                    last_sent = True
+        if "sold out" in text or "no tickets available" in text:
+            print("❌ No tickets")
+            last_sent = False
+        else:
+            if not last_sent:
+                send_message("🟢 CHECK NOW! Possible TTD availability!")
+                last_sent = True
 
-        except Exception as e:
-            print("Error:", e)
+    except Exception as e:
+        print("Error:", e)
 
-        await browser.close()
-
-async def main():
-    while True:
-        await check_tickets()
-        await asyncio.sleep(120)  # every 2 min
-
-asyncio.run(main())
+while True:
+    check_tickets()
+    time.sleep(120)
